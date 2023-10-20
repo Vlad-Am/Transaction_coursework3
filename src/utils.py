@@ -47,8 +47,9 @@ def make_transactions(transactions: list):
         '''
         # переменная кошелёк
         wallet = ""
+
         try:
-            card = transactions[f'{where}']
+            card = transaction[f'{where}']
             if card[:4] == "Счет":
                 wallet = f"{card[:4]} **{card[-4:]}"
             else:
@@ -57,24 +58,23 @@ def make_transactions(transactions: list):
         except:
             return wallet
 
-        # добавляем в пустой список экземпляры класса Transaction
-        for transaction in transactions:
-            try:
-                operation_id = transaction["id"]
-                state = transaction["state"]
-                date_full = datetime.datetime.strptime(transaction["date"], "%Y-%m-%dT%H:%M:%S.%f")
-                date = datetime.datetime.strftime(date_full, "%d.%m.%Y")
-                description = transaction["description"]
-                sender = check_wallet("from")
-                receiver = check_wallet("to")
-                amount = transaction["operationAmount"]["amount"]
-                currency = transaction["operationAmount"]["currency"]["name"]
-                transaction = Transaction(operation_id, state, date, description, sender, receiver, amount, currency)
-                transactions_list.append(transaction)
-            except:
-                continue
+    # добавляем в пустой список экземпляры класса Transaction
+    for transaction in transactions:
+        try:
+            operation_id = transaction["id"]
+            state = transaction["state"]
+            date_full = datetime.datetime.strptime(transaction["date"], "%Y-%m-%dT%H:%M:%S.%f")
+            date = datetime.datetime.strftime(date_full, "%d.%m.%Y")
+            description = transaction["description"]
+            sender = check_wallet("from")
+            receiver = check_wallet("to")
+            amount = transaction["operationAmount"]["amount"]
+            currency = transaction["operationAmount"]["currency"]["name"]
+            transaction = Transaction(operation_id, state, date, description, sender, receiver, amount, currency)
+            transactions_list.append(transaction)
+        except:
+            continue
 
-    check_wallet()
     return transactions_list
 
 
