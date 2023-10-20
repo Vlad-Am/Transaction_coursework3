@@ -13,18 +13,30 @@ def load_file(filename):
     :return: словарь с банковскими операциями
     '''
     with open(filename, "r", encoding="UTF-8") as file:
-        operations = json.load(file)
-        return operations
+        transactions = json.load(file)
+        return transactions
 
 
-def make_operations(operations: list):
+# def get_all_Transaction(transactions: list):
+#     '''
+#     Функция выводит все сортированные по дате операции
+#     :param transactions: список экземпляров класса Transactions
+#     :return: данные со всеми отсортированными операциями
+#     '''
+#     information = ''
+#     transactions.sort(key=lambda x: datetime.datetime.strptime(x.get_date(), "%d.%m.%Y"), reverse=True)
+#     for transaction in transactions:
+#         information += transaction.get_information()
+#     return information
+
+def make_transactions(transactions: list):
     '''
-    Функция создаёт список экземпляров класса Operations,
+    Функция создаёт список экземпляров класса Transactions,
     который включает в себя всю информацию о банковской операции
-    :param operations: список с банковскими операциями
+    :param transactions: список с банковскими операциями
     '''
     # создаем список для экземпляров класса
-    operations_list = []
+    transactions_list = []
 
     def check_wallet(where: str):
         '''
@@ -36,7 +48,7 @@ def make_operations(operations: list):
         # переменная кошелёк
         wallet = ""
         try:
-            card = inf[f'{where}']
+            card = transactions[f'{where}']
             if card[:4] == "Счет":
                 wallet = f"{card[:4]} **{card[-4:]}"
             else:
@@ -45,50 +57,40 @@ def make_operations(operations: list):
         except:
             return wallet
 
-    for inf in operations:
-        try:
-            operation_id = inf["id"]
-            state = inf["state"]
-            date_full = datetime.datetime.strptime(inf["date"], "%Y-%m-%dT%H:%M:%S.%f")
-            date = datetime.datetime.strftime(date_full, "%d.%m.%Y")
-            description = inf["description"]
-            sender = check_wallet("from")
-            receiver = check_wallet("to")
-            amount = inf["operationAmount"]["amount"]
-            currency = inf["operationAmount"]["currency"]["name"]
-            operation = Transaction(operation_id, state, date, description, sender, receiver, amount, currency)
-            operations_list.append(operation)
-        except:
-            continue
-    return operations_list
+        # добавляем в пустой список экземпляры класса Transaction
+        for transaction in transactions:
+            try:
+                operation_id = transaction["id"]
+                state = transaction["state"]
+                date_full = datetime.datetime.strptime(transaction["date"], "%Y-%m-%dT%H:%M:%S.%f")
+                date = datetime.datetime.strftime(date_full, "%d.%m.%Y")
+                description = transaction["description"]
+                sender = check_wallet("from")
+                receiver = check_wallet("to")
+                amount = transaction["operationAmount"]["amount"]
+                currency = transaction["operationAmount"]["currency"]["name"]
+                transaction = Transaction(operation_id, state, date, description, sender, receiver, amount, currency)
+                transactions_list.append(transaction)
+            except:
+                continue
+
+    check_wallet()
+    return transactions_list
 
 
-def get_all_operations(operations: list):
+def get_executed_five(transactions: list):
     '''
-    Функция выводит все сортированные по дате операции
-    :param operations: список экземпляров класса Operations
-    :return: данные со всеми отсортированными операциями
-    '''
-    information = ''
-    operations.sort(key=lambda x: datetime.datetime.strptime(x.get_date(), "%d.%m.%Y"), reverse=True)
-    for operation in operations:
-        information += operation.get_information()
-    return information
-
-
-def get_executed_five(operations: list):
-    '''
-    Функция выводит последние 5 выполенных операций
-    :param operations: список экземпляров класса Operations
+    Функция выводит последние 5 выполненных операций
+    :param transactions: список экземпляров класса Transactions
     :return: данные с пятью последними успешными операциями
     '''
-    operations_counter = 0
+    transactions_counter = 0
     information = ''
-    operations.sort(key=lambda x: datetime.datetime.strptime(x.get_date(), "%d.%m.%Y"), reverse=True)
-    for operation in operations:
-        if operation.state == "EXECUTED":
-            operations_counter += 1
-            information += operation.get_information()
-        if operations_counter == 5:
+    transactions.sort(key=lambda x: datetime.datetime.strptime(x.get_date(), "%d.%m.%Y"), reverse=True)
+    for transaction in transactions:
+        if transaction.state == "EXECUTED":
+            transactions_counter += 1
+            information += transaction.get_information()
+        if transactions_counter == 5:
             break
     return information
