@@ -17,18 +17,6 @@ def load_file(filename):
         return transactions
 
 
-# def get_all_Transaction(transactions: list):
-#     '''
-#     Функция выводит все сортированные по дате операции
-#     :param transactions: список экземпляров класса Transactions
-#     :return: данные со всеми отсортированными операциями
-#     '''
-#     information = ''
-#     transactions.sort(key=lambda x: datetime.datetime.strptime(x.get_date(), "%d.%m.%Y"), reverse=True)
-#     for transaction in transactions:
-#         information += transaction.get_information()
-#     return information
-
 def make_transactions(transactions: list):
     '''
     Функция создаёт список экземпляров класса Transactions,
