@@ -4,7 +4,7 @@ from src import utils
 
 
 def test_get_executed_five():
-    transaction_list = utils.load_file("../transaction.json")
+    transaction_list = utils.load_file("transaction.json")
     transaction = utils.make_transactions(transaction_list)
     assert utils.get_executed_five(transaction) == "08.12.2019 Открытие вклада\n" \
                                                    " -> Счет **5907\n" \
@@ -24,19 +24,20 @@ def test_get_executed_five():
 
 
 def test_make_transactions():
-    transaction_list_1 = utils.load_file("../transaction.json")
+    transaction_list_1 = utils.load_file("transaction.json")
     for objective in utils.make_transactions(transaction_list_1):
         assert type(objective) is src.transaction.Transaction
 
-    transaction_list = utils.load_file("../transaction_for_test.json")
+    transaction_list = utils.load_file("transaction_for_test.json")
     assert str(utils.make_transactions(transaction_list)[0]) == "операция 441945886"
     assert str(utils.make_transactions(transaction_list)[1]) == "операция 873106923"
     assert utils.make_transactions(transaction_list)[0].get_id() == 441945886
     assert utils.make_transactions(transaction_list)[0].get_date() == "26.08.2019"
     assert utils.make_transactions(transaction_list)[0].get_state() == "EXECUTED"
     assert utils.make_transactions(transaction_list)[0].get_information() == "26.08.2019 Перевод организации\n" \
-                                                                "Maestro 1596 83** **** 5199 -> Счет **9589\n" \
-                                                                "31957.58 руб.\n\n"
-def test_load_file():
-    assert type(utils.load_file("../transaction.json")) is list
+                                                                             "Maestro 1596 83** **** 5199 -> Счет **9589\n" \
+                                                                             "31957.58 руб.\n\n"
 
+
+def test_load_file():
+    assert type(utils.load_file("transaction.json")) is list
